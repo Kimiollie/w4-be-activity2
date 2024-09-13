@@ -17,7 +17,13 @@ const createCar = async (req, res) => {
     const newCar = await Car.create({ ...req.body });
     res.status(201).json(newCar);
   } catch (error) {
-    res.status(400).json({ message: "Failed to create car", error: error.message });
+    if (error.name === "ValidationError") {
+      res.status(400).json({ message: "Invalid input", error: error.message });
+    } else {
+      res
+        .status(500)
+        .json({ message: "Failed to create car" });
+    }
   }
 };
 

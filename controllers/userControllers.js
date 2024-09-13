@@ -14,12 +14,17 @@ const getAllUsers = async (req, res) => {
 // POST /users
 const createUser = async (req, res) => {
     try {
-        const newUser = await User.create({ ...req.body });
-        res.status(201).json(newUser);
+      const newUser = await User.create({ ...req.body });
+      res.status(201).json(newUser);
     } catch (error) {
+      console.log(error);
+      if (error.name === "ValidationError") {
         res
-            .status(400)
-            .json({ message: "Failed to create user", error: error.message });
+          .status(400)
+          .json({ message: "Invalid input", error: error.message });
+      } else {
+        res.status(500).json({ message: "Failed to create user" });
+      }
     }
 };
 
